@@ -187,13 +187,39 @@ automatically, so no code changes are needed.
 so the first request after idling can take ~30–60 seconds to wake up — that's
 normal, not a bug.
 
-## Cloud deployment (IBM Watson Machine Learning)
+## IBM Cloud / Watson ML deployment
 
-The original spec calls for hosting the trained model on IBM Cloud via
-Watson Machine Learning for scalable, real-time predictions. This repo keeps
-the model-serving logic (`app.py`'s `/predict` route) decoupled from the
-Flask routing layer specifically so it can be lifted into a WML deployment
-notebook: export `model/best_model.pkl` and `model/*.json` /
-`model/*.pkl` (encoders, scaler) as a WML model package and point a WML
-scoring endpoint at the same feature vector construction used in
-`preprocessing.py::FEATURE_COLS`.
+The project's architecture diagram specifies deployment via IBM Cloud and
+Watson Machine Learning. `deploy_to_watson_ml.py` implements that path:
+it registers `model/best_model.pkl` with the Watson ML repository and
+creates a live scoring endpoint, using the current `ibm-watsonx-ai` SDK
+(the older `ibm-watson-machine-learning` package is deprecated as of mid-2024).
+
+**Status:** the code is written and its local logic (encoding/scaling a
+sample request the same way `app.py` does) is tested, but it hasn't been run
+against a live IBM Cloud account — IBM Cloud requires credit/debit card
+verification even for its free "Lite" tier, which wasn't available. The
+public, working deployment for this project is on Render (see above); this
+script is ready to run the moment IBM Cloud access is available.
+
+**To actually deploy it, once you have IBM Cloud access:**
+
+1. Sign up at [cloud.ibm.com/registration](https://cloud.ibm.com/registration)
+   (requires card verification, no charge within Lite tier limits).
+2. In the **Catalog**, create a **Watson Machine Learning** service (Lite plan).
+3. Create an **API key**: IBM Cloud console → **Manage** → **Access (IAM)** →
+   **API keys** → **Create**. Copy the key (shown only once).
+4. Create a **deployment space**: go to the **Deployments** section →
+   **Spaces** → **New deployment space** → give it a name → **Create**.
+   Once created, open it → **Manage** tab → copy the **Space ID**.
+5. Fill in `IBM_CLOUD_API_KEY`, `WML_URL` (matches the region you picked —
+   e.g. `https://us-south.ml.cloud.ibm.com`), and `DEPLOYMENT_SPACE_ID` at
+   the top of `deploy_to_watson_ml.py`.
+6. Run:
+   ```bash
+   pip install -r requirements-watson.txt
+   python deploy_to_watson_ml.py
+   ```
+   This stores the model, deploys it, and scores one sample applicant to
+   confirm the live endpoint works — printing the deployment ID and scoring
+   URL at the end.
