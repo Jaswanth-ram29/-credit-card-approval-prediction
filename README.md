@@ -10,6 +10,10 @@ scikit-learn/XGBoost, and a Flask web interface ("Ledger").
 
 *(Free tier — the first request after inactivity can take 30–60 seconds to wake up.)*
 
+## Demo Video
+
+🎥 https://drive.google.com/file/d/1IASstHlK-CoX6L2kvy_ofFda5zKZ3RiF/view?usp=sharing
+
 ## 👤 Demo Credentials
 
 To try the app with a signed-in account (view Prediction History, etc.)
