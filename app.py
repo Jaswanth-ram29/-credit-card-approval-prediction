@@ -31,6 +31,7 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-producti
 
 db.init_db()
 db.seed_ml_models()
+db.seed_demo_user()
 
 with open("model/best_model.pkl", "rb") as f:
     MODEL = pickle.load(f)

@@ -123,6 +123,14 @@ def seed_ml_models(model_info_path="model/model_info.json"):
             )
 
 
+def seed_demo_user():
+    """Creates a fixed demo account (if it doesn't already exist) so anyone
+    reviewing the project can log in immediately without registering."""
+    from werkzeug.security import generate_password_hash
+    if not get_user_by_email("demo@example.com"):
+        create_user("Demo User", "demo@example.com", generate_password_hash("demo1234"))
+
+
 # --- Users ------------------------------------------------------------------
 
 def create_user(name, email, password_hash, role="analyst"):
