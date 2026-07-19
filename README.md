@@ -37,6 +37,7 @@ Planning, UAT) are in
 
 ## 📂 What's Inside
 
+```text
 credit_card_approval/
 
 ├── 1. Ideation Phase/
